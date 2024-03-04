@@ -10,9 +10,6 @@
 						"type": "DatasetReference"
 					},
 					"name": "source1"
-				},
-				{
-					"name": "source2"
 				}
 			],
 			"sinks": [
@@ -100,8 +97,6 @@
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false,",
 				"     documentForm: 'documentPerLine') ~> source1",
-				"source(allowSchemaDrift: true,",
-				"     validateSchema: false) ~> source2",
 				"source1 select(mapColumn(",
 				"          product",
 				"     ),",
