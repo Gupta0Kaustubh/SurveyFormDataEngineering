@@ -1,0 +1,17 @@
+{
+	"name": "sql_reference",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_destination_sql_db",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "source",
+			"table": "athelete"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

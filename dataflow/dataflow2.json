@@ -1,0 +1,203 @@
+{
+	"name": "dataflow2",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "Json3",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "AzureSqlTable3",
+						"type": "DatasetReference"
+					},
+					"name": "user"
+				},
+				{
+					"dataset": {
+						"referenceName": "AzureSqlTable4",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				},
+				{
+					"dataset": {
+						"referenceName": "AzureSqlTable5",
+						"type": "DatasetReference"
+					},
+					"name": "factTable"
+				}
+			],
+			"transformations": [
+				{
+					"name": "join1"
+				},
+				{
+					"name": "select1"
+				},
+				{
+					"name": "userSurrogate"
+				},
+				{
+					"name": "select2"
+				},
+				{
+					"name": "product"
+				},
+				{
+					"name": "join2"
+				},
+				{
+					"name": "select3"
+				},
+				{
+					"name": "select4"
+				},
+				{
+					"name": "feedbacksurrogate"
+				},
+				{
+					"name": "select5"
+				},
+				{
+					"name": "aggregate1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          {_id} as ({$oid} as string),",
+				"          comment as string,",
+				"          email as string,",
+				"          name as string,",
+				"          phone as string,",
+				"          product as string,",
+				"          question1 as string,",
+				"          question2 as ({$numberInt} as short),",
+				"          question3 as string,",
+				"          question4 as ({$numberInt} as short),",
+				"          question5 as ({$numberInt} as short),",
+				"          question6 as ({$numberInt} as short),",
+				"          question7 as ({$numberInt} as short),",
+				"          question8 as ({$numberInt} as short)",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     documentForm: 'documentPerLine') ~> source1",
+				"select3, userSurrogate join(select3@email == select1@email,",
+				"     joinType:'left',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> join1",
+				"source1 select(mapColumn(",
+				"          name,",
+				"          email,",
+				"          phone",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"select1 keyGenerate(output(user_id as long),",
+				"     startAt: 1L,",
+				"     stepValue: 1L) ~> userSurrogate",
+				"source1 select(mapColumn(",
+				"          product",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select2",
+				"select2 keyGenerate(output(product_id as long),",
+				"     startAt: 1L,",
+				"     stepValue: 1L) ~> product",
+				"join1, product join(select3@product == select2@product,",
+				"     joinType:'left',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> join2",
+				"source1 select(mapColumn(",
+				"          comment,",
+				"          question1,",
+				"          question2 = question2.{$numberInt},",
+				"          question3,",
+				"          question4 = question4.{$numberInt},",
+				"          question5 = question5.{$numberInt},",
+				"          question6 = question6.{$numberInt},",
+				"          question7 = question7.{$numberInt},",
+				"          question8 = question8.{$numberInt},",
+				"          email,",
+				"          product",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select3",
+				"join2 select(mapColumn(",
+				"          comment,",
+				"          question1,",
+				"          question2,",
+				"          question3,",
+				"          question4,",
+				"          question5,",
+				"          question6,",
+				"          question7,",
+				"          question8,",
+				"          user_id,",
+				"          product_id",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select4",
+				"select4 keyGenerate(output(feedback_id as long),",
+				"     startAt: 1L,",
+				"     stepValue: 1L) ~> feedbacksurrogate",
+				"feedbacksurrogate select(mapColumn(",
+				"          question2,",
+				"          question4,",
+				"          question5,",
+				"          question6,",
+				"          question7,",
+				"          question8,",
+				"          user_id,",
+				"          product_id",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select5",
+				"select5 aggregate(groupBy(product_id),",
+				"     Average = avg(question2 + question4+question5+question6+question7+question8),",
+				"          NumberOfUsers = count(user_id)) ~> aggregate1",
+				"userSurrogate sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> user",
+				"product sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> sink1",
+				"feedbacksurrogate sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> factTable"
+			]
+		}
+	}
+}

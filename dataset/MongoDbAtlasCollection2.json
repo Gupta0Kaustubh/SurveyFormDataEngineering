@@ -1,0 +1,16 @@
+{
+	"name": "MongoDbAtlasCollection2",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_mongo",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "MongoDbAtlasCollection",
+		"schema": [],
+		"typeProperties": {
+			"collection": "surveys"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}
