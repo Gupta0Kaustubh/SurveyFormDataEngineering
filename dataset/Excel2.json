@@ -1,0 +1,36 @@
+{
+	"name": "Excel2",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureBlobStoragedemo1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Excel",
+		"typeProperties": {
+			"sheetName": "noc_regions",
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "noc_regions.xls",
+				"folderPath": "input",
+				"container": "source"
+			},
+			"firstRowAsHeader": true
+		},
+		"schema": [
+			{
+				"name": "NOC",
+				"type": "String"
+			},
+			{
+				"name": "region",
+				"type": "String"
+			},
+			{
+				"name": "notes",
+				"type": "String"
+			}
+		]
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

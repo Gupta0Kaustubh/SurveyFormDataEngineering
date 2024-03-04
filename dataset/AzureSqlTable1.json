@@ -1,0 +1,17 @@
+{
+	"name": "AzureSqlTable1",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureSqlDatabasedemo1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "db",
+			"table": "noc_regions_outp"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

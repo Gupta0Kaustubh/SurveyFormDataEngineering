@@ -1,0 +1,17 @@
+{
+	"name": "AzureSqlTable6",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureSqlDatabasedemo1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "survey",
+			"table": "FactTable"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

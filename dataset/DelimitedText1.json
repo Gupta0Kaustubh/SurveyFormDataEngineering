@@ -1,0 +1,77 @@
+{
+	"name": "DelimitedText1",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureBlobStoragedemo1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "source1_data_preview.csv",
+				"container": "survey"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "comment",
+				"type": "String"
+			},
+			{
+				"name": "email",
+				"type": "String"
+			},
+			{
+				"name": "name",
+				"type": "String"
+			},
+			{
+				"name": "phone",
+				"type": "String"
+			},
+			{
+				"name": "product",
+				"type": "String"
+			},
+			{
+				"name": "question1",
+				"type": "String"
+			},
+			{
+				"name": "question2",
+				"type": "String"
+			},
+			{
+				"name": "question3",
+				"type": "String"
+			},
+			{
+				"name": "question4",
+				"type": "String"
+			},
+			{
+				"name": "question5",
+				"type": "String"
+			},
+			{
+				"name": "question6",
+				"type": "String"
+			},
+			{
+				"name": "question7",
+				"type": "String"
+			},
+			{
+				"name": "question8",
+				"type": "String"
+			}
+		]
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

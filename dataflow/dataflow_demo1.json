@@ -1,0 +1,132 @@
+{
+	"name": "dataflow_demo1",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "src_athletes",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				},
+				{
+					"dataset": {
+						"referenceName": "Excel2",
+						"type": "DatasetReference"
+					},
+					"name": "source2"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "AzureSqlTable2",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				},
+				{
+					"dataset": {
+						"referenceName": "AzureSqlTable3",
+						"type": "DatasetReference"
+					},
+					"name": "sink2"
+				}
+			],
+			"transformations": [
+				{
+					"name": "join1"
+				},
+				{
+					"name": "split1"
+				},
+				{
+					"name": "select1"
+				},
+				{
+					"name": "select2"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          ID as string,",
+				"          Name as string,",
+				"          Sex as string,",
+				"          Age as string,",
+				"          Height as string,",
+				"          Weight as string,",
+				"          Team as string,",
+				"          NOC as string,",
+				"          Games as string,",
+				"          Year as string,",
+				"          Season as string,",
+				"          City as string,",
+				"          Sport as string,",
+				"          Event as string,",
+				"          Medal as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> source1",
+				"source(output(",
+				"          NOC as string,",
+				"          region as string,",
+				"          notes as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> source2",
+				"source1, source2 join(source1@NOC == source2@NOC,",
+				"     joinType:'inner',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> join1",
+				"join1 split(Season=='Summer',",
+				"     disjoint: true) ~> split1@(summeroutput, winteroutput)",
+				"split1@summeroutput select(mapColumn(",
+				"          ID,",
+				"          Name,",
+				"          NOC = split1@summeroutput@NOC,",
+				"          Year,",
+				"          Season,",
+				"          Sport,",
+				"          NOC = split1@summeroutput@NOC,",
+				"          region",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"split1@winteroutput select(mapColumn(",
+				"          ID,",
+				"          NOC = split1@winteroutput@NOC,",
+				"          Year,",
+				"          Season,",
+				"          region",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select2",
+				"select1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> sink1",
+				"select2 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> sink2"
+			]
+		}
+	}
+}

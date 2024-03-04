@@ -1,0 +1,163 @@
+{
+	"name": "SurveyDataFlow",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "Json3",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "AzureSqlTable4",
+						"type": "DatasetReference"
+					},
+					"name": "sinkProduct"
+				},
+				{
+					"dataset": {
+						"referenceName": "AzureSqlTable5",
+						"type": "DatasetReference"
+					},
+					"name": "sinkUser"
+				},
+				{
+					"dataset": {
+						"referenceName": "AzureSqlTable6",
+						"type": "DatasetReference"
+					},
+					"name": "sinkfactTable"
+				}
+			],
+			"transformations": [
+				{
+					"name": "select1"
+				},
+				{
+					"name": "ProductTable"
+				},
+				{
+					"name": "select2"
+				},
+				{
+					"name": "User"
+				},
+				{
+					"name": "join1"
+				},
+				{
+					"name": "join2"
+				},
+				{
+					"name": "select3"
+				},
+				{
+					"name": "FactTable"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          product as string,",
+				"          name as string,",
+				"          email as string,",
+				"          phone as string,",
+				"          question1 as string,",
+				"          question2 as integer,",
+				"          question3 as string,",
+				"          question4 as integer,",
+				"          question5 as integer,",
+				"          question6 as integer,",
+				"          question7 as integer,",
+				"          question8 as integer,",
+				"          comment as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     documentForm: 'documentPerLine') ~> source1",
+				"source1 select(mapColumn(",
+				"          product",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"select1 keyGenerate(output(product_id as long),",
+				"     startAt: 1L,",
+				"     stepValue: 1L) ~> ProductTable",
+				"source1 select(mapColumn(",
+				"          email,",
+				"          name,",
+				"          phone",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select2",
+				"select2 keyGenerate(output(user_id as long),",
+				"     startAt: 1L,",
+				"     stepValue: 1L) ~> User",
+				"source1, ProductTable join(source1@product == select1@product,",
+				"     joinType:'left',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> join1",
+				"join1, User join(source1@email == select2@email,",
+				"     joinType:'left',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> join2",
+				"join2 select(mapColumn(",
+				"          comment,",
+				"          question1,",
+				"          question2,",
+				"          question3,",
+				"          question4,",
+				"          question5,",
+				"          question6,",
+				"          question7,",
+				"          question8,",
+				"          product_id,",
+				"          user_id",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select3",
+				"select3 keyGenerate(output(feedback_id as long),",
+				"     startAt: 1L,",
+				"     stepValue: 1L) ~> FactTable",
+				"ProductTable sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> sinkProduct",
+				"User sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> sinkUser",
+				"FactTable sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> sinkfactTable"
+			]
+		}
+	}
+}
