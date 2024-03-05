@@ -15,14 +15,14 @@
 			"sinks": [
 				{
 					"dataset": {
-						"referenceName": "AzureSqlTable3",
+						"referenceName": "AzureSqlTable5",
 						"type": "DatasetReference"
 					},
 					"name": "user"
 				},
 				{
 					"dataset": {
-						"referenceName": "AzureSqlTable4",
+						"referenceName": "AzureSqlTable5",
 						"type": "DatasetReference"
 					},
 					"name": "sink1"
