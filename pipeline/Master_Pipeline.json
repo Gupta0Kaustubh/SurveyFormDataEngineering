@@ -1,5 +1,5 @@
 {
-	"name": "pipeline3",
+	"name": "Master_Pipeline",
 	"properties": {
 		"activities": [
 			{
@@ -44,10 +44,8 @@
 				]
 			},
 			{
-				"name": "dataflow2",
+				"name": "dataflow_sql",
 				"type": "ExecuteDataFlow",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Copy data1",
@@ -66,7 +64,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "dataflow2",
+						"referenceName": "dataflow_sql",
 						"type": "DataFlowReference"
 					},
 					"compute": {
