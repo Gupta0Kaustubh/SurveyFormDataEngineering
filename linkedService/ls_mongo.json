@@ -8,7 +8,7 @@
 			"connectionString": "mongodb+srv://sumitkumar:@cluster0.uvyjppv.mongodb.net/?w=majority;retryWrites=true",
 			"database": "test",
 			"driverVersion": "v2",
-			"encryptedCredential": "ew0KICAiVmVyc2lvbiI6ICIyMDE3LTExLTMwIiwNCiAgIlByb3RlY3Rpb25Nb2RlIjogIktleSIsDQogICJTZWNyZXRDb250ZW50VHlwZSI6ICJQbGFpbnRleHQiLA0KICAiQ3JlZGVudGlhbElkIjogIkRBVEFGQUNUT1JZQDYyQkNGQTIzLTc5NTQtNEVFRi05MTUxLUUxMDlDRTUyMkVENF9kOTNkNjVhOC0zNmM0LTQ4YWItYmU0YS1mNjAyZGZjMGJhYTciDQp9"
+			"encryptedCredential": "ew0KICAiVmVyc2lvbiI6ICIyMDE3LTExLTMwIiwNCiAgIlByb3RlY3Rpb25Nb2RlIjogIktleSIsDQogICJTZWNyZXRDb250ZW50VHlwZSI6ICJQbGFpbnRleHQiLA0KICAiQ3JlZGVudGlhbElkIjogIkRBVEFGQUNUT1JZQDkwNzRDMTFDLUY3RjQtNEEyOS1BM0Q0LTM4NkJBRDM5RjVERF9lOTM0YzI1Mi1iNjU0LTQ3MDQtYjQzNy1jY2E3YjFmZjc1MWIiDQp9"
 		}
 	}
 }
