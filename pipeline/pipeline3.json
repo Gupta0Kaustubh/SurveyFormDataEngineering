@@ -38,7 +38,7 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "Json4",
+						"referenceName": "dataset_output",
 						"type": "DatasetReference"
 					}
 				]
@@ -46,6 +46,8 @@
 			{
 				"name": "dataflow2",
 				"type": "ExecuteDataFlow",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Copy data1",
