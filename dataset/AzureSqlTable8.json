@@ -1,0 +1,68 @@
+{
+	"name": "AzureSqlTable8",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureSqlDatabasedemo1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "comment",
+				"type": "nvarchar"
+			},
+			{
+				"name": "question1",
+				"type": "nvarchar"
+			},
+			{
+				"name": "question2",
+				"type": "nvarchar"
+			},
+			{
+				"name": "question3",
+				"type": "nvarchar"
+			},
+			{
+				"name": "question4",
+				"type": "nvarchar"
+			},
+			{
+				"name": "question5",
+				"type": "nvarchar"
+			},
+			{
+				"name": "question6",
+				"type": "nvarchar"
+			},
+			{
+				"name": "question7",
+				"type": "nvarchar"
+			},
+			{
+				"name": "question8",
+				"type": "nvarchar"
+			},
+			{
+				"name": "product_id",
+				"type": "bigint",
+				"precision": 19
+			},
+			{
+				"name": "user_id",
+				"type": "bigint",
+				"precision": 19
+			},
+			{
+				"name": "feedback_id",
+				"type": "bigint",
+				"precision": 19
+			}
+		],
+		"typeProperties": {
+			"schema": "survey",
+			"table": "FactTable"
+		}
+	}
+}

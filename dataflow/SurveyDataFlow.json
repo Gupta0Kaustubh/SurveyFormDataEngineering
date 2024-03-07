@@ -10,6 +10,13 @@
 						"type": "DatasetReference"
 					},
 					"name": "source1"
+				},
+				{
+					"dataset": {
+						"referenceName": "AzureSqlTable8",
+						"type": "DatasetReference"
+					},
+					"name": "Fact"
 				}
 			],
 			"sinks": [
@@ -40,6 +47,20 @@
 						"type": "DatasetReference"
 					},
 					"name": "AvgFeedback"
+				},
+				{
+					"dataset": {
+						"referenceName": "AzureSqlTable9",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				},
+				{
+					"dataset": {
+						"referenceName": "AzureSqlTable10",
+						"type": "DatasetReference"
+					},
+					"name": "sink2"
 				}
 			],
 			"transformations": [
@@ -75,6 +96,36 @@
 				},
 				{
 					"name": "select4"
+				},
+				{
+					"name": "derivedColumn1"
+				},
+				{
+					"name": "split1"
+				},
+				{
+					"name": "join4"
+				},
+				{
+					"name": "select5"
+				},
+				{
+					"name": "aggregate2"
+				},
+				{
+					"name": "sort1"
+				},
+				{
+					"name": "sort2"
+				},
+				{
+					"name": "sort3"
+				},
+				{
+					"name": "derivedColumn2"
+				},
+				{
+					"name": "derivedColumn3"
 				}
 			],
 			"scriptLines": [
@@ -97,6 +148,24 @@
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false,",
 				"     documentForm: 'documentPerLine') ~> source1",
+				"source(output(",
+				"          comment as string,",
+				"          question1 as string,",
+				"          question2 as integer,",
+				"          question3 as string,",
+				"          question4 as integer,",
+				"          question5 as integer,",
+				"          question6 as integer,",
+				"          question7 as integer,",
+				"          question8 as integer,",
+				"          product_id as long,",
+				"          user_id as long,",
+				"          feedback_id as long",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> Fact",
 				"source1 select(mapColumn(",
 				"          product",
 				"     ),",
@@ -154,11 +223,33 @@
 				"join3 select(mapColumn(",
 				"          product_id = aggregate1@product_id,",
 				"          product = source1@product,",
-				"          count_of_users,",
-				"          avg_feedback_value",
+				"          count_of_users",
 				"     ),",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> select4",
+				"Fact derive(AvgRating = (question2+question4+question5+question6+question7+question8)/6) ~> derivedColumn1",
+				"aggregate2 split(AvgRating<=3,",
+				"     disjoint: false) ~> split1@(ProductsWithGoodRating, ProductsWithBadRating)",
+				"derivedColumn1, ProductTable join(Fact@product_id == ProductTable@product_id,",
+				"     joinType:'inner',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> join4",
+				"join4 select(mapColumn(",
+				"          product_id = Fact@product_id,",
+				"          product,",
+				"          AvgRating",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select5",
+				"select5 aggregate(groupBy(product_id,",
+				"          product),",
+				"     AvgRating = sum(AvgRating)/count(AvgRating)) ~> aggregate2",
+				"split1@ProductsWithGoodRating sort(asc(AvgRating, true)) ~> sort1",
+				"split1@ProductsWithBadRating sort(desc(AvgRating, true)) ~> sort2",
+				"select4 sort(desc(count_of_users, true)) ~> sort3",
+				"sort1 derive(AvgRating = 6-AvgRating) ~> derivedColumn2",
+				"sort2 derive(AvgRating = 6-AvgRating) ~> derivedColumn3",
 				"ProductTable sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     deletable:false,",
@@ -189,7 +280,7 @@
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
 				"     errorHandlingOption: 'stopOnFirstError') ~> sinkfactTable",
-				"select4 sink(allowSchemaDrift: true,",
+				"sort3 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     deletable:false,",
 				"     insertable:true,",
@@ -198,7 +289,27 @@
 				"     format: 'table',",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
-				"     errorHandlingOption: 'stopOnFirstError') ~> AvgFeedback"
+				"     errorHandlingOption: 'stopOnFirstError') ~> AvgFeedback",
+				"derivedColumn2 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> sink1",
+				"derivedColumn3 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> sink2"
 			]
 		}
 	}
